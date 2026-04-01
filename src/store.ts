@@ -24,7 +24,7 @@ interface GameState {
 
   timeoutId: number | null;
 
-  activeModal: 'none' | 'login' | 'howToPlay';
+  activeModal: 'none' | 'login' | 'howToPlay' | 'leaveWarning';
   
   // Actions
   startGame: () => void;
@@ -35,7 +35,7 @@ interface GameState {
   resetGame: () => void;
   tickTimer: () => void;
   clearMessage: () => void;
-  setActiveModal: (modal: 'none' | 'login' | 'howToPlay') => void;
+  setActiveModal: (modal: 'none' | 'login' | 'howToPlay' | 'leaveWarning') => void;
 }
 
 const getRandomWord = (mode: GameMode) => {

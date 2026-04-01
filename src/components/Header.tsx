@@ -2,10 +2,10 @@ import { useGameStore } from '../store';
 import { Home } from 'lucide-react';
 
 export const Header = () => {
-  const { mode } = useGameStore();
+  const { mode, setActiveModal } = useGameStore();
 
   const handleGoHome = () => {
-    window.location.reload();
+    setActiveModal('leaveWarning');
   };
 
   return (
