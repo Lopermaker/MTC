@@ -75,13 +75,26 @@ export const StartMenu = () => {
           </button>
         </div>
 
-        <div className="mt-12 text-center text-sm font-bold text-slate-800 dark:text-slate-300 flex items-center justify-center gap-2">
-          <p className="font-medium text-slate-500 dark:text-slate-400">Edited by</p>
-          <div className="flex items-center text-xl font-bold tracking-[-0.08em]">
-            <span className="text-slate-900 dark:text-white">TRA</span>
-            <div className="relative flex items-center justify-center ml-[0.5px]">
-              <span className="text-slate-900 dark:text-white">E</span>
-              <div className="absolute right-[2px] w-[3px] h-[3px] bg-slate-900 dark:bg-white rounded-full"></div>
+        <div className="mt-12 flex flex-col items-center gap-2">
+          <div className="text-center text-sm font-bold text-slate-800 dark:text-slate-300 flex items-center justify-center gap-2">
+            <p className="font-medium text-slate-500 dark:text-slate-400">Edited by</p>
+            <div className="flex items-center text-xl font-bold tracking-[-0.08em]">
+              <span className="text-slate-900 dark:text-white">TRA</span>
+              <div className="relative flex items-center justify-center ml-[0.5px]">
+                <span className="text-slate-900 dark:text-white">E</span>
+                <div className="absolute right-[2px] w-[3px] h-[3px] bg-slate-900 dark:bg-white rounded-full"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-center">
+            <div className="w-8 h-8 bg-white rounded-md flex items-center justify-center shadow-sm">
+              <div className="relative w-5 h-[14px] border-[2.5px] border-black rounded-sm flex items-center justify-center gap-1">
+                <div className="w-1 h-1 bg-black rounded-full"></div>
+                <div className="w-1 h-1 bg-black rounded-full"></div>
+                {/* The bottom-left cutout to match the icon */}
+                <div className="absolute -bottom-[2.5px] -left-[2.5px] w-[3px] h-[3px] bg-white"></div>
+              </div>
             </div>
           </div>
         </div>
