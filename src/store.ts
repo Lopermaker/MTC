@@ -1,5 +1,11 @@
 import { create } from 'zustand';
 import wordsData from './data/words.json';
+import { Filter } from 'bad-words';
+import humanNames from 'human-names';
+
+const filter = new Filter();
+
+const lowerNames = new Set(humanNames.allEn.map((name: string) => name.toLowerCase()));
 
 type GameMode = 'classic' | 'insanity';
 
@@ -71,7 +77,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     
     const maxLength = mode === 'classic' ? 5 : 6;
     if (currentGuess.length < maxLength) {
-      set({ currentGuess: currentGuess + letter });
+      set({ currentGuess: currentGuess + letter, message: null });
     }
   },
 
@@ -80,7 +86,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (gameStatus !== 'playing' || isRevealing) return;
 
     if (currentGuess.length > 0) {
-      set({ currentGuess: currentGuess.slice(0, -1) });
+      set({ currentGuess: currentGuess.slice(0, -1), message: null });
     }
   },
 
@@ -94,12 +100,35 @@ export const useGameStore = create<GameState>((set, get) => ({
     if (currentGuess.length !== maxLength) {
       set({ invalidGuess: true, message: 'Not enough letters' });
       setTimeout(() => set({ invalidGuess: false }), 500);
+      setTimeout(() => {
+        if (get().message === 'Not enough letters') set({ message: null });
+      }, 1500);
       return;
     }
 
     const wordList = wordsData[mode];
+
+    if (filter.isProfane(currentGuess)) {
+      set({ invalidGuess: true, message: 'Inappropriate' });
+      setTimeout(() => set({ invalidGuess: false }), 500);
+      setTimeout(() => {
+        if (get().message === 'Inappropriate') set({ message: null });
+      }, 1500);
+      return;
+    }
+
     if (!wordList.includes(currentGuess)) {
-      set({ invalidGuess: true, message: 'Not in word list' });
+      if (lowerNames.has(currentGuess.toLowerCase())) {
+        set({ invalidGuess: true, message: 'Names are not words' });
+        setTimeout(() => {
+          if (get().message === 'Names are not words') set({ message: null });
+        }, 1500);
+      } else {
+        set({ invalidGuess: true, message: 'Invalid word' });
+        setTimeout(() => {
+          if (get().message === 'Invalid word') set({ message: null });
+        }, 1500);
+      }
       setTimeout(() => set({ invalidGuess: false }), 500);
       return;
     }
@@ -110,8 +139,10 @@ export const useGameStore = create<GameState>((set, get) => ({
       for (let i = 0; i < maxLength; i++) {
         // Correct letters must be reused
         if (prevGuess[i] === solution[i] && currentGuess[i] !== solution[i]) {
-          set({ invalidGuess: true, message: `Must use ${solution[i]} in position ${i + 1}` });
+          const msg = `Must use ${solution[i]} in position ${i + 1}`;
+          set({ invalidGuess: true, message: msg });
           setTimeout(() => set({ invalidGuess: false }), 500);
+          setTimeout(() => { if (get().message === msg) set({ message: null }); }, 1500);
           return;
         }
       }
@@ -127,8 +158,10 @@ export const useGameStore = create<GameState>((set, get) => ({
       
       for (const char of prevPresent) {
         if (!currentGuess.includes(char)) {
-          set({ invalidGuess: true, message: `Guess must contain ${char}` });
+          const msg = `Guess must contain ${char}`;
+          set({ invalidGuess: true, message: msg });
           setTimeout(() => set({ invalidGuess: false }), 500);
+          setTimeout(() => { if (get().message === msg) set({ message: null }); }, 1500);
           return;
         }
       }
