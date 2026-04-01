@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Outfit', sans-serif;
+    @apply bg-slate-50 text-slate-900;
+  }
+  
+  .dark body {
+    @apply bg-slate-900 text-slate-50;
+  }
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+@layer utilities {
+  .animate-in {
+    animation-duration: 150ms;
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    animation-fill-mode: both;
+  }
+  .fade-in {
+    animation-name: fadeIn;
+  }
+  .zoom-in-95 {
+    animation-name: zoomIn95;
+  }
+  .slide-in-from-top-4 {
+    animation-name: slideInFromTop4;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes zoomIn95 {
+  from { transform: scale(0.95); }
+  to { transform: scale(1); }
+}
+
+@keyframes slideInFromTop4 {
+  from { transform: translateY(-1rem); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
