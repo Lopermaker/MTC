@@ -9,19 +9,12 @@ export const StartMenu = () => {
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-4 animate-in fade-in duration-500">
       <div className="flex flex-col items-center max-w-md w-full relative">
         
-        {/* Logo Grid */}
-        <div className="grid grid-cols-3 gap-1.5 w-[72px] h-[72px] mb-8">
-          <div className="bg-white dark:bg-slate-900 border-[3px] border-slate-900 dark:border-slate-100 rounded-sm"></div>
-          <div className="bg-white dark:bg-slate-900 border-[3px] border-slate-900 dark:border-slate-100 rounded-sm"></div>
-          <div className="bg-emerald-500 border-[3px] border-slate-900 dark:border-slate-100 rounded-sm"></div>
-
-          <div className="bg-white dark:bg-slate-900 border-[3px] border-slate-900 dark:border-slate-100 rounded-sm"></div>
-          <div className="bg-amber-400 border-[3px] border-slate-900 dark:border-slate-100 rounded-sm"></div>
-          <div className="bg-emerald-500 border-[3px] border-slate-900 dark:border-slate-100 rounded-sm"></div>
-
-          <div className="bg-emerald-500 border-[3px] border-slate-900 dark:border-slate-100 rounded-sm"></div>
-          <div className="bg-emerald-500 border-[3px] border-slate-900 dark:border-slate-100 rounded-sm"></div>
-          <div className="bg-emerald-500 border-[3px] border-slate-900 dark:border-slate-100 rounded-sm"></div>
+        {/* Original Logo */}
+        <div className="relative w-24 h-24 mb-6 flex items-center justify-center">
+          <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500 to-emerald-400 rounded-2xl transform rotate-3 opacity-80 shadow-lg"></div>
+          <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 to-slate-800 dark:from-slate-100 dark:to-white rounded-2xl transform -rotate-3 shadow-xl flex items-center justify-center">
+            <span className="text-white dark:text-slate-900 font-serif font-black text-5xl tracking-tighter">L</span>
+          </div>
         </div>
 
         <h1 className="text-5xl font-black mb-3 font-serif tracking-tight">Lexicon</h1>
