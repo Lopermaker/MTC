@@ -7,6 +7,7 @@ export const Header = () => {
   return (
     <header className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-800 w-full max-w-3xl mx-auto">
       <div className="flex items-center gap-2">
+        {/* Modes can be toggled here or kept just for display if you want, but leaving it as is for easy switching */}
         <button
           onClick={() => setMode('classic')}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold transition-all ${

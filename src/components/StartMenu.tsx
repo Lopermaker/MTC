@@ -2,7 +2,7 @@ import { useGameStore } from '../store';
 import { X } from 'lucide-react';
 
 export const StartMenu = () => {
-  const { startGame, activeModal, setActiveModal } = useGameStore();
+  const { startGame, activeModal, setActiveModal, mode, setMode } = useGameStore();
   const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
   return (
@@ -50,7 +50,31 @@ export const StartMenu = () => {
           </button>
         </div>
 
-        <div className="mt-16 text-center text-sm font-bold text-slate-800 dark:text-slate-300">
+        {/* Mode Toggles */}
+        <div className="flex items-center gap-2 mt-6">
+          <button
+            onClick={() => setMode('classic')}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all ${
+              mode === 'classic' 
+                ? 'bg-emerald-500 text-white shadow-md' 
+                : 'bg-transparent border-2 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-400'
+            }`}
+          >
+            Classic
+          </button>
+          <button
+            onClick={() => setMode('insanity')}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold transition-all ${
+              mode === 'insanity' 
+                ? 'bg-rose-500 text-white shadow-md' 
+                : 'bg-transparent border-2 border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-400'
+            }`}
+          >
+            Insanity
+          </button>
+        </div>
+
+        <div className="mt-12 text-center text-sm font-bold text-slate-800 dark:text-slate-300">
           <p>{today}</p>
           <p className="font-medium mt-0.5">No. 1</p>
           <p className="font-medium mt-0.5">Edited by Trae</p>
