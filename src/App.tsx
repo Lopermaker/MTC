@@ -4,19 +4,24 @@ import { Header } from './components/Header';
 import { GameBoard } from './components/GameBoard';
 import { Keyboard } from './components/Keyboard';
 import { Modal } from './components/Modal';
+import { StartMenu } from './components/StartMenu';
 
 function App() {
-  const { mode, gameStatus, tickTimer, message } = useGameStore();
+  const { hasStarted, mode, gameStatus, tickTimer, message } = useGameStore();
 
   useEffect(() => {
     let timer: number;
-    if (mode === 'insanity' && gameStatus === 'playing') {
+    if (hasStarted && mode === 'insanity' && gameStatus === 'playing') {
       timer = window.setInterval(() => {
         tickTimer();
       }, 1000);
     }
     return () => clearInterval(timer);
-  }, [mode, gameStatus, tickTimer]);
+  }, [hasStarted, mode, gameStatus, tickTimer]);
+
+  if (!hasStarted) {
+    return <StartMenu />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-300 relative">

@@ -32,8 +32,8 @@ export const Header = () => {
       </div>
 
       <div className="flex flex-col items-end">
-        <h1 className="text-2xl font-black tracking-widest text-slate-900 dark:text-white uppercase">
-          WORDLE<span className={mode === 'insanity' ? 'text-rose-500' : 'text-emerald-500'}>+</span>
+        <h1 className="text-2xl font-black tracking-widest text-slate-900 dark:text-white uppercase font-serif">
+          LEXICON<span className={mode === 'insanity' ? 'text-rose-500' : 'text-emerald-500'}>+</span>
         </h1>
         {mode === 'insanity' && (
           <div className={`text-sm font-bold mt-1 ${timeLeft <= 10 ? 'text-rose-500 animate-pulse' : 'text-slate-500'}`}>

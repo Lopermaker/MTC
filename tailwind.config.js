@@ -7,6 +7,9 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      fontFamily: {
+        serif: ['"Playfair Display"', 'serif'],
+      },
       keyframes: {
         pop: {
           '0%': { transform: 'scale(0.8)', opacity: '0' },

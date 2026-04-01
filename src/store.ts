@@ -10,6 +10,7 @@ const lowerNames = new Set(humanNames.allEn.map((name: string) => name.toLowerCa
 type GameMode = 'classic' | 'insanity';
 
 interface GameState {
+  hasStarted: boolean;
   mode: GameMode;
   solution: string;
   guesses: string[];
@@ -24,6 +25,7 @@ interface GameState {
   timeoutId: number | null;
 
   // Actions
+  startGame: () => void;
   setMode: (mode: GameMode) => void;
   addLetter: (letter: string) => void;
   removeLetter: () => void;
@@ -41,6 +43,7 @@ const getRandomWord = (mode: GameMode) => {
 const INITIAL_TIME = 60;
 
 export const useGameStore = create<GameState>((set, get) => ({
+  hasStarted: false,
   mode: 'classic',
   solution: getRandomWord('classic'),
   guesses: [],
@@ -52,6 +55,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   isRevealing: false,
   message: null,
   timeoutId: null,
+
+  startGame: () => set({ hasStarted: true }),
 
   setMode: (mode) => {
     const { timeoutId } = get();
