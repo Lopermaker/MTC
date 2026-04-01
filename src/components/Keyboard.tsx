@@ -9,7 +9,7 @@ const KEYBOARD_ROWS = [
 ];
 
 export const Keyboard = () => {
-  const { guesses, solution, addLetter, removeLetter, submitGuess } = useGameStore();
+  const { revealedGuesses, solution, addLetter, removeLetter, submitGuess } = useGameStore();
 
   const keyStates = useMemo(() => {
     const states: Record<string, 'correct' | 'present' | 'absent' | 'unused'> = {};
@@ -17,7 +17,7 @@ export const Keyboard = () => {
     // Initialize
     KEYBOARD_ROWS.flat().forEach(key => states[key] = 'unused');
 
-    for (const guess of guesses) {
+    for (const guess of revealedGuesses) {
       for (let i = 0; i < guess.length; i++) {
         const letter = guess[i];
         if (solution[i] === letter) {
@@ -30,7 +30,7 @@ export const Keyboard = () => {
       }
     }
     return states;
-  }, [guesses, solution]);
+  }, [revealedGuesses, solution]);
 
   const stateClasses = {
     correct: 'bg-emerald-500 text-white',

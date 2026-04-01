@@ -16,15 +16,19 @@ export const Tile = ({ letter, state, animate, delay }: TileProps) => {
   }, [letter]);
 
   useEffect(() => {
-    if (animate && state !== 'empty' && state !== 'tbd') {
-      const timer = setTimeout(() => {
-        setIsFlipping(true);
-        setTimeout(() => {
-          setCurrentState(state as any);
-          setIsFlipping(false);
-        }, 150);
-      }, delay * 200);
-      return () => clearTimeout(timer);
+    if (state !== 'empty' && state !== 'tbd') {
+      if (animate) {
+        const timer = setTimeout(() => {
+          setIsFlipping(true);
+          setTimeout(() => {
+            setCurrentState(state as any);
+            setIsFlipping(false);
+          }, 150);
+        }, delay * 200);
+        return () => clearTimeout(timer);
+      } else {
+        setCurrentState(state as any);
+      }
     }
   }, [animate, state, delay]);
 

@@ -7,11 +7,15 @@ interface GameState {
   mode: GameMode;
   solution: string;
   guesses: string[];
+  revealedGuesses: string[];
   currentGuess: string;
   gameStatus: 'playing' | 'won' | 'lost';
   timeLeft: number;
   invalidGuess: boolean;
+  isRevealing: boolean;
   message: string | null;
+
+  timeoutId: number | null;
 
   // Actions
   setMode: (mode: GameMode) => void;
@@ -34,28 +38,36 @@ export const useGameStore = create<GameState>((set, get) => ({
   mode: 'classic',
   solution: getRandomWord('classic'),
   guesses: [],
+  revealedGuesses: [],
   currentGuess: '',
   gameStatus: 'playing',
   timeLeft: INITIAL_TIME,
   invalidGuess: false,
+  isRevealing: false,
   message: null,
+  timeoutId: null,
 
   setMode: (mode) => {
+    const { timeoutId } = get();
+    if (timeoutId) window.clearTimeout(timeoutId);
     set({
       mode,
       solution: getRandomWord(mode),
       guesses: [],
+      revealedGuesses: [],
       currentGuess: '',
       gameStatus: 'playing',
       timeLeft: mode === 'insanity' ? INITIAL_TIME : 0,
       invalidGuess: false,
+      isRevealing: false,
       message: null,
+      timeoutId: null,
     });
   },
 
   addLetter: (letter) => {
-    const { currentGuess, mode, gameStatus } = get();
-    if (gameStatus !== 'playing') return;
+    const { currentGuess, mode, gameStatus, isRevealing } = get();
+    if (gameStatus !== 'playing' || isRevealing) return;
     
     const maxLength = mode === 'classic' ? 5 : 6;
     if (currentGuess.length < maxLength) {
@@ -64,8 +76,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   removeLetter: () => {
-    const { currentGuess, gameStatus } = get();
-    if (gameStatus !== 'playing') return;
+    const { currentGuess, gameStatus, isRevealing } = get();
+    if (gameStatus !== 'playing' || isRevealing) return;
 
     if (currentGuess.length > 0) {
       set({ currentGuess: currentGuess.slice(0, -1) });
@@ -73,8 +85,8 @@ export const useGameStore = create<GameState>((set, get) => ({
   },
 
   submitGuess: () => {
-    const { currentGuess, mode, guesses, solution, gameStatus } = get();
-    if (gameStatus !== 'playing') return;
+    const { currentGuess, mode, guesses, solution, gameStatus, isRevealing } = get();
+    if (gameStatus !== 'playing' || isRevealing) return;
 
     const maxLength = mode === 'classic' ? 5 : 6;
     const maxGuesses = mode === 'classic' ? 6 : 5;
@@ -123,7 +135,7 @@ export const useGameStore = create<GameState>((set, get) => ({
     }
 
     const newGuesses = [...guesses, currentGuess];
-    let newStatus = gameStatus;
+    let newStatus: 'playing' | 'won' | 'lost' = gameStatus;
 
     if (currentGuess === solution) {
       newStatus = 'won';
@@ -131,30 +143,66 @@ export const useGameStore = create<GameState>((set, get) => ({
       newStatus = 'lost';
     }
 
-    set({
-      guesses: newGuesses,
-      currentGuess: '',
-      gameStatus: newStatus,
-      message: newStatus === 'lost' ? solution : (newStatus === 'won' ? 'Magnificent!' : null)
-    });
+    if (newStatus !== 'playing') {
+      set({
+        guesses: newGuesses,
+        currentGuess: '',
+        isRevealing: true
+      });
+
+      // Wait for tile animations to finish before showing the modal
+      // Each tile has a 200ms stagger + 150ms flip animation. 
+      // max letters * 200ms + padding = ~1500ms
+      const tid = window.setTimeout(() => {
+        set({
+          revealedGuesses: newGuesses,
+          gameStatus: newStatus,
+          message: newStatus === 'lost' ? solution : 'Magnificent!',
+          isRevealing: false,
+          timeoutId: null
+        });
+      }, maxLength * 200 + 400);
+
+      set({ timeoutId: tid });
+    } else {
+      set({
+        guesses: newGuesses,
+        currentGuess: '',
+        isRevealing: true
+      });
+      
+      const tid = window.setTimeout(() => {
+        set({
+          revealedGuesses: newGuesses,
+          isRevealing: false,
+          timeoutId: null
+        });
+      }, maxLength * 200 + 400);
+
+      set({ timeoutId: tid });
+    }
   },
 
   resetGame: () => {
-    const { mode } = get();
+    const { mode, timeoutId } = get();
+    if (timeoutId) window.clearTimeout(timeoutId);
     set({
       solution: getRandomWord(mode),
       guesses: [],
+      revealedGuesses: [],
       currentGuess: '',
       gameStatus: 'playing',
       timeLeft: mode === 'insanity' ? INITIAL_TIME : 0,
       invalidGuess: false,
+      isRevealing: false,
       message: null,
+      timeoutId: null,
     });
   },
 
   tickTimer: () => {
-    const { timeLeft, gameStatus, mode } = get();
-    if (mode === 'insanity' && gameStatus === 'playing' && timeLeft > 0) {
+    const { timeLeft, gameStatus, mode, isRevealing } = get();
+    if (mode === 'insanity' && gameStatus === 'playing' && !isRevealing && timeLeft > 0) {
       if (timeLeft - 1 === 0) {
         set({ timeLeft: 0, gameStatus: 'lost', message: 'Time\'s up!' });
       } else {
