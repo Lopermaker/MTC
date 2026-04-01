@@ -75,13 +75,13 @@ export const StartMenu = () => {
           </button>
         </div>
 
-        <div className="mt-12 text-center text-sm font-bold text-slate-800 dark:text-slate-300 flex items-center justify-center gap-1.5">
-          <p className="font-medium">Edited by</p>
-          <div className="flex items-center font-black tracking-tighter uppercase text-base">
-            <span>TRA</span>
-            <div className="relative inline-flex items-center justify-center">
-              <span>E</span>
-              <div className="absolute top-[43%] right-[2px] w-[3.5px] h-[3.5px] bg-current rounded-full"></div>
+        <div className="mt-12 text-center text-sm font-bold text-slate-800 dark:text-slate-300 flex items-center justify-center gap-2">
+          <p className="font-medium text-slate-500 dark:text-slate-400">Edited by</p>
+          <div className="flex items-center text-xl font-bold tracking-[-0.08em]">
+            <span className="text-slate-900 dark:text-white">TRA</span>
+            <div className="relative flex items-center justify-center ml-[0.5px]">
+              <span className="text-slate-900 dark:text-white">E</span>
+              <div className="absolute right-[2px] w-[3px] h-[3px] bg-slate-900 dark:bg-white rounded-full"></div>
             </div>
           </div>
         </div>
