@@ -2,10 +2,14 @@ import { useGameStore } from '../store';
 import { Home } from 'lucide-react';
 
 export const Header = () => {
-  const { mode, setActiveModal } = useGameStore();
+  const { mode, setActiveModal, gameStatus } = useGameStore();
 
   const handleGoHome = () => {
-    setActiveModal('leaveWarning');
+    if (gameStatus === 'playing') {
+      setActiveModal('leaveWarning');
+    } else {
+      window.location.reload();
+    }
   };
 
   return (
@@ -21,6 +25,15 @@ export const Header = () => {
       </div>
 
       <div className="flex flex-col items-end">
+        {gameStatus !== 'playing' && (
+          <button
+            onClick={() => setActiveModal('gameOver')}
+            className="absolute top-4 right-4 flex items-center justify-center p-2 rounded-full text-emerald-500 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors"
+            title="View Results"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          </button>
+        )}
         <h1 className="text-2xl font-black tracking-widest text-slate-900 dark:text-white uppercase font-serif">
           LEXICON<span className={mode === 'insanity' ? 'text-rose-500' : 'text-emerald-500'}>+</span>
         </h1>

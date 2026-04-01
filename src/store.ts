@@ -24,7 +24,7 @@ interface GameState {
 
   timeoutId: number | null;
 
-  activeModal: 'none' | 'login' | 'howToPlay' | 'leaveWarning';
+  activeModal: 'none' | 'login' | 'howToPlay' | 'leaveWarning' | 'gameOver';
   
   // Actions
   startGame: () => void;
@@ -35,7 +35,7 @@ interface GameState {
   resetGame: () => void;
   tickTimer: () => void;
   clearMessage: () => void;
-  setActiveModal: (modal: 'none' | 'login' | 'howToPlay' | 'leaveWarning') => void;
+  setActiveModal: (modal: 'none' | 'login' | 'howToPlay' | 'leaveWarning' | 'gameOver') => void;
 }
 
 const getRandomWord = (mode: GameMode) => {
@@ -213,7 +213,8 @@ export const useGameStore = create<GameState>((set, get) => ({
           gameStatus: newStatus,
           message: newStatus === 'lost' ? solution : 'Magnificent!',
           isRevealing: false,
-          timeoutId: null
+          timeoutId: null,
+          activeModal: 'gameOver'
         });
       }, maxLength * 200 + 400);
 

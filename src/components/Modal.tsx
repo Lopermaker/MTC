@@ -40,7 +40,7 @@ export const Modal = () => {
     );
   }
 
-  if (gameStatus === 'playing') return null;
+  if (activeModal !== 'gameOver' || gameStatus === 'playing') return null;
 
   const isWin = gameStatus === 'won';
 
@@ -48,11 +48,11 @@ export const Modal = () => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in">
       <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 flex flex-col items-center animate-in zoom-in-95 relative">
         
-        {/* Added a home button here so users can exit the end screen */}
+        {/* Button to close the modal and view the board */}
         <button 
-          onClick={() => window.location.reload()} 
+          onClick={() => setActiveModal('none')} 
           className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-          title="Return to Start Menu"
+          title="View Board"
         >
           <X size={24} />
         </button>
