@@ -1,13 +1,15 @@
 import { useGameStore } from '../store';
+import { X } from 'lucide-react';
 
 export const StartMenu = () => {
-  const { startGame } = useGameStore();
+  const { startGame, activeModal, setActiveModal } = useGameStore();
   const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-4 animate-in fade-in duration-500">
-      <div className="flex flex-col items-center max-w-md w-full">
+      <div className="flex flex-col items-center max-w-md w-full relative">
         
+        {/* Logo Grid */}
         <div className="grid grid-cols-3 gap-1.5 w-[72px] h-[72px] mb-8">
           <div className="bg-white dark:bg-slate-900 border-[3px] border-slate-900 dark:border-slate-100 rounded-sm"></div>
           <div className="bg-white dark:bg-slate-900 border-[3px] border-slate-900 dark:border-slate-100 rounded-sm"></div>
@@ -35,13 +37,13 @@ export const StartMenu = () => {
             Play
           </button>
           <button
-            onClick={startGame}
+            onClick={() => setActiveModal('login')}
             className="w-full bg-transparent border-2 border-slate-900 dark:border-slate-100 text-slate-900 dark:text-slate-100 font-bold text-lg py-3 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95 transition-colors"
           >
             Log in
           </button>
           <button
-            onClick={startGame}
+            onClick={() => setActiveModal('howToPlay')}
             className="w-full bg-transparent border-2 border-slate-900 dark:border-slate-100 text-slate-900 dark:text-slate-100 font-bold text-lg py-3 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95 transition-colors"
           >
             How to play
@@ -54,6 +56,69 @@ export const StartMenu = () => {
           <p className="font-medium mt-0.5">Edited by Trae</p>
         </div>
       </div>
+
+      {activeModal === 'howToPlay' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-8 max-w-sm w-full relative animate-in zoom-in-95">
+            <button onClick={() => setActiveModal('none')} className="absolute top-4 right-4 p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+              <X size={24} />
+            </button>
+            <h2 className="text-2xl font-black mb-4 font-serif">How To Play</h2>
+            <h3 className="text-lg font-bold mb-2">Guess the Lexicon in 6 tries.</h3>
+            <ul className="list-disc pl-5 space-y-2 text-sm text-slate-600 dark:text-slate-400 mb-6">
+              <li>Each guess must be a valid 5-letter word.</li>
+              <li>The color of the tiles will change to show how close your guess was to the word.</li>
+            </ul>
+            <div className="space-y-4">
+              <div>
+                <div className="flex gap-1 mb-2">
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold bg-emerald-500 text-white border-2 border-emerald-500">W</div>
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold bg-transparent border-2 border-slate-400">E</div>
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold bg-transparent border-2 border-slate-400">A</div>
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold bg-transparent border-2 border-slate-400">R</div>
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold bg-transparent border-2 border-slate-400">Y</div>
+                </div>
+                <p className="text-sm"><strong>W</strong> is in the word and in the correct spot.</p>
+              </div>
+              <div>
+                <div className="flex gap-1 mb-2">
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold bg-transparent border-2 border-slate-400">P</div>
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold bg-amber-400 text-white border-2 border-amber-400">I</div>
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold bg-transparent border-2 border-slate-400">L</div>
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold bg-transparent border-2 border-slate-400">L</div>
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold bg-transparent border-2 border-slate-400">S</div>
+                </div>
+                <p className="text-sm"><strong>I</strong> is in the word but in the wrong spot.</p>
+              </div>
+              <div>
+                <div className="flex gap-1 mb-2">
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold bg-transparent border-2 border-slate-400">V</div>
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold bg-transparent border-2 border-slate-400">A</div>
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold bg-transparent border-2 border-slate-400">G</div>
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold bg-slate-700 text-white border-2 border-slate-700">U</div>
+                  <div className="w-10 h-10 flex items-center justify-center text-xl font-bold bg-transparent border-2 border-slate-400">E</div>
+                </div>
+                <p className="text-sm"><strong>U</strong> is not in the word in any spot.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeModal === 'login' && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in p-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-8 max-w-sm w-full relative animate-in zoom-in-95 text-center">
+            <button onClick={() => setActiveModal('none')} className="absolute top-4 right-4 p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+              <X size={24} />
+            </button>
+            <h2 className="text-2xl font-black mb-4 font-serif">Log in</h2>
+            <p className="text-slate-600 dark:text-slate-400 mb-6">Login is not available in this demo version.</p>
+            <button onClick={() => setActiveModal('none')} className="w-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold py-3 rounded-full hover:scale-105 active:scale-95 transition-transform">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

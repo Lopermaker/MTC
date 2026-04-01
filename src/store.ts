@@ -24,6 +24,8 @@ interface GameState {
 
   timeoutId: number | null;
 
+  activeModal: 'none' | 'login' | 'howToPlay';
+  
   // Actions
   startGame: () => void;
   setMode: (mode: GameMode) => void;
@@ -33,6 +35,7 @@ interface GameState {
   resetGame: () => void;
   tickTimer: () => void;
   clearMessage: () => void;
+  setActiveModal: (modal: 'none' | 'login' | 'howToPlay') => void;
 }
 
 const getRandomWord = (mode: GameMode) => {
@@ -55,8 +58,11 @@ export const useGameStore = create<GameState>((set, get) => ({
   isRevealing: false,
   message: null,
   timeoutId: null,
+  activeModal: 'none',
 
   startGame: () => set({ hasStarted: true }),
+
+  setActiveModal: (modal) => set({ activeModal: modal }),
 
   setMode: (mode) => {
     const { timeoutId } = get();
@@ -73,6 +79,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       isRevealing: false,
       message: null,
       timeoutId: null,
+      activeModal: 'none',
     });
   },
 
@@ -107,6 +114,15 @@ export const useGameStore = create<GameState>((set, get) => ({
       setTimeout(() => set({ invalidGuess: false }), 500);
       setTimeout(() => {
         if (get().message === 'Not enough letters') set({ message: null });
+      }, 1500);
+      return;
+    }
+
+    if (guesses.includes(currentGuess)) {
+      set({ invalidGuess: true, message: 'Already guessed' });
+      setTimeout(() => set({ invalidGuess: false }), 500);
+      setTimeout(() => {
+        if (get().message === 'Already guessed') set({ message: null });
       }, 1500);
       return;
     }
@@ -235,6 +251,7 @@ export const useGameStore = create<GameState>((set, get) => ({
       isRevealing: false,
       message: null,
       timeoutId: null,
+      activeModal: 'none',
     });
   },
 
