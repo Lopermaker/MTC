@@ -44,7 +44,7 @@ export const Tile = ({ letter, state, animate, delay }: TileProps) => {
 
   return (
     <div
-      className={`w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center text-3xl font-bold uppercase transition-all duration-150 border-2 rounded-lg select-none
+      className={`w-[12vw] max-w-[64px] h-[12vw] max-h-[64px] min-w-[44px] min-h-[44px] flex items-center justify-center text-2xl sm:text-3xl font-bold uppercase transition-all duration-150 border-2 rounded-lg select-none
         ${isFlipping ? 'scale-y-0 opacity-50' : 'scale-y-100 opacity-100'} 
         ${stateClasses[currentState]}
         ${isFilled && currentState === 'tbd' ? 'animate-pop' : ''}

@@ -58,9 +58,9 @@ export const Keyboard = () => {
   }, [addLetter, removeLetter, submitGuess]);
 
   return (
-    <div className="flex flex-col items-center gap-2 w-full max-w-[500px] px-2 mx-auto">
+    <div className="flex flex-col items-center gap-1.5 w-full max-w-[500px] px-1 sm:px-2 mx-auto">
       {KEYBOARD_ROWS.map((row, i) => (
-        <div key={i} className="flex justify-center gap-1 sm:gap-1.5 w-full">
+        <div key={i} className="flex justify-center gap-1 sm:gap-1.5 w-full px-0.5">
           {row.map((key) => {
             const isEnter = key === 'ENTER';
             const isBackspace = key === 'BACKSPACE';
@@ -76,14 +76,14 @@ export const Keyboard = () => {
                   else addLetter(key);
                 }}
                 className={`
-                  flex items-center justify-center rounded font-bold text-sm sm:text-base select-none transition-colors
-                  ${isEnter || isBackspace ? 'w-12 sm:w-16 px-1 text-xs sm:text-sm' : 'flex-1 max-w-[44px]'} 
-                  h-14 sm:h-14
+                  flex items-center justify-center rounded font-bold text-xs sm:text-base select-none transition-colors
+                  ${isEnter || isBackspace ? 'w-10 sm:w-16 px-1' : 'flex-1 max-w-[44px]'} 
+                  h-12 sm:h-14
                   ${stateClasses[state]}
                   active:scale-95 hover:brightness-110
                 `}
               >
-                {isBackspace ? <Delete size={20} /> : key}
+                {isBackspace ? <Delete size={20} className="sm:w-5 sm:h-5 w-4 h-4" /> : key}
               </button>
             );
           })}
