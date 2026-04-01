@@ -2,7 +2,7 @@ import { useGameStore } from '../store';
 import { Tile } from './Tile';
 
 export const GameBoard = () => {
-  const { guesses, currentGuess, solution, mode, invalidGuess } = useGameStore();
+  const { guesses, currentGuess, solution, mode, invalidGuess, timeLeft } = useGameStore();
 
   const maxGuesses = mode === 'classic' ? 6 : 5;
   const wordLength = mode === 'classic' ? 5 : 6;
@@ -10,7 +10,12 @@ export const GameBoard = () => {
   const empties = Math.max(0, maxGuesses - 1 - guesses.length);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-2 mt-4 mb-4">
+    <div className="flex flex-col items-center justify-center gap-2 mt-4 mb-4 relative">
+      {mode === 'insanity' && (
+        <div className={`absolute -top-10 font-bold text-lg ${timeLeft <= 10 ? 'text-rose-500 animate-pulse' : 'text-slate-500'}`}>
+          {timeLeft}s
+        </div>
+      )}
       {guesses.map((guess, i) => (
         <Row
           key={`guess-${i}`}
