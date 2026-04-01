@@ -76,9 +76,7 @@ export const StartMenu = () => {
         </div>
 
         <div className="mt-12 text-center text-sm font-bold text-slate-800 dark:text-slate-300">
-          <p>{today}</p>
-          <p className="font-medium mt-0.5">No. 1</p>
-          <p className="font-medium mt-0.5">Edited by Trae</p>
+          <p className="font-medium">Edited by Trae</p>
         </div>
       </div>
 
