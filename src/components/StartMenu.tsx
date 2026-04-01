@@ -10,16 +10,24 @@ export const StartMenu = () => {
       <div className="flex flex-col items-center max-w-md w-full relative">
         
         {/* Original Logo */}
-        <div className="relative w-24 h-24 mb-6 flex items-center justify-center">
-          <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500 to-emerald-400 rounded-2xl transform rotate-3 opacity-80 shadow-lg"></div>
-          <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 to-slate-800 dark:from-slate-100 dark:to-white rounded-2xl transform -rotate-3 shadow-xl flex items-center justify-center">
-            <span className="text-white dark:text-slate-900 font-serif font-black text-5xl tracking-tighter">L</span>
+        <div className="relative w-24 h-24 mb-6 flex items-center justify-center group">
+          {/* Background layered tiles for a "stack of letters" effect */}
+          <div className="absolute inset-0 bg-emerald-500 rounded-2xl transform -rotate-6 transition-transform group-hover:-rotate-12 duration-300"></div>
+          <div className="absolute inset-0 bg-amber-400 rounded-2xl transform rotate-6 transition-transform group-hover:rotate-12 duration-300 shadow-md"></div>
+          
+          {/* Main front tile */}
+          <div className="absolute inset-0 bg-white dark:bg-slate-900 border-4 border-slate-900 dark:border-slate-100 rounded-2xl flex items-center justify-center shadow-xl z-10">
+            <span className="text-slate-900 dark:text-white font-serif font-black text-6xl tracking-tighter">L</span>
           </div>
         </div>
 
         <h1 className="text-5xl font-black mb-3 font-serif tracking-tight">Lexicon</h1>
-        <p className="text-2xl text-center mb-10 font-serif leading-snug">
-          Get 6 chances to guess a 5-letter word.
+        <p className="text-2xl text-center mb-10 font-serif leading-snug h-16">
+          {mode === 'classic' ? (
+            'Get 6 chances to guess a 5-letter word.'
+          ) : (
+            <span>Get 5 chances to guess a <span className="text-rose-500 font-bold">6-letter word</span> in 60s.</span>
+          )}
         </p>
 
         <div className="flex flex-col gap-3 w-full max-w-[260px]">
