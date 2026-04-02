@@ -99,12 +99,9 @@ export const useGameStore = create<GameState>((set, get) => ({
       if (res.ok) {
         const data = await res.json();
         set({ user: data.user });
-      } else {
-        // Token is invalid/expired
-        get().logout();
       }
     } catch (err) {
-      console.error('Auth initialization failed', err);
+      // Backend not available (e.g. Netlify), silently ignore
     }
   },
 
