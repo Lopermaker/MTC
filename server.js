@@ -27,11 +27,39 @@ app.use(express.json());
 
 const SECRET = 'lexicon-super-secret-key-2026'; // In production, use process.env.JWT_SECRET
 
+// Validator Functions
+const isValidEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const isValidPassword = (password) => {
+  return password && password.length >= 6;
+};
+
+// JWT Middleware for Route Protection
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ error: 'No token provided' });
+
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    res.status(403).json({ error: 'Invalid or expired token' });
+  }
+};
+
 // Register
 app.post('/api/register', (req, res) => {
   const { email, password, name } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
   
+  if (!isValidEmail(email)) return res.status(400).json({ error: 'Invalid email format' });
+  if (!isValidPassword(password)) return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+
   try {
     const hash = bcrypt.hashSync(password, 10);
     const userName = name || email.split('@')[0];
@@ -71,20 +99,15 @@ app.post('/api/login', (req, res) => {
 });
 
 // Get Current User
-app.get('/api/me', (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ error: 'No token provided' });
-
-  const token = authHeader.split(' ')[1];
+app.get('/api/me', authenticateToken, (req, res) => {
   try {
-    const decoded = jwt.verify(token, SECRET);
     const stmt = db.prepare('SELECT name, email FROM users WHERE id = ?');
-    const user = stmt.get(decoded.id);
+    const user = stmt.get(req.user.id);
     
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json({ user });
   } catch (err) {
-    res.status(401).json({ error: 'Invalid or expired token' });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 

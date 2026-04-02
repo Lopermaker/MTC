@@ -40,6 +40,7 @@ interface GameState {
   setActiveModal: (modal: 'none' | 'login' | 'howToPlay' | 'leaveWarning' | 'gameOver') => void;
   setUser: (user: { name: string; email: string } | null, token?: string | null) => void;
   logout: () => void;
+  initAuth: () => Promise<void>;
 }
 
 const getRandomWord = (mode: GameMode) => {
@@ -82,6 +83,28 @@ export const useGameStore = create<GameState>((set, get) => ({
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     set({ user: null, token: null });
+  },
+
+  initAuth: async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const res = await fetch('/api/me', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        set({ user: data.user });
+      } else {
+        // Token is invalid/expired
+        get().logout();
+      }
+    } catch (err) {
+      console.error('Auth initialization failed', err);
+    }
   },
 
   setMode: (mode) => {

@@ -7,7 +7,11 @@ import { Modal } from './components/Modal';
 import { StartMenu } from './components/StartMenu';
 
 function App() {
-  const { hasStarted, mode, gameStatus, tickTimer, message } = useGameStore();
+  const { hasStarted, mode, gameStatus, tickTimer, message, initAuth } = useGameStore();
+
+  useEffect(() => {
+    initAuth();
+  }, [initAuth]);
 
   useEffect(() => {
     let timer: number;
