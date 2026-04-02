@@ -51,14 +51,23 @@ export const StartMenu = () => {
             <div className="flex gap-2 items-center">
               <button 
                 onClick={() => setActiveModal('avatarSelection')}
-                className="shrink-0 w-14 h-14 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-700 hover:border-emerald-500 transition-colors bg-slate-100 dark:bg-slate-800 flex items-center justify-center p-1"
+                className="shrink-0 w-14 h-14 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-700 hover:border-emerald-500 transition-colors bg-slate-100 dark:bg-slate-800 flex items-center justify-center relative group"
                 title="Change Avatar"
               >
-                <img 
-                  src={user.avatar || `https://api.dicebear.com/9.x/bottts/svg?seed=${user.name}`} 
-                  alt="Avatar" 
-                  className="w-full h-full rounded-full"
-                />
+                {user.avatar ? (
+                  <img 
+                    src={user.avatar} 
+                    alt="Avatar" 
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <span className="text-2xl font-bold uppercase text-slate-500 dark:text-slate-400">
+                    {user.name.charAt(0)}
+                  </span>
+                )}
+                <div className="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">Edit</span>
+                </div>
               </button>
               <div className="flex-1 flex items-center justify-center bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-bold text-lg px-4 rounded-full truncate h-14">
                 Hi, {user.name}
