@@ -24,8 +24,8 @@ interface GameState {
 
   timeoutId: number | null;
 
-  activeModal: 'none' | 'login' | 'howToPlay' | 'leaveWarning' | 'gameOver';
-  user: { name: string; email: string } | null;
+  activeModal: 'none' | 'login' | 'howToPlay' | 'leaveWarning' | 'gameOver' | 'avatarSelection';
+  user: { name: string; email: string; avatar?: string } | null;
   token: string | null;
   
   // Actions
@@ -37,10 +37,11 @@ interface GameState {
   resetGame: () => void;
   tickTimer: () => void;
   clearMessage: () => void;
-  setActiveModal: (modal: 'none' | 'login' | 'howToPlay' | 'leaveWarning' | 'gameOver') => void;
-  setUser: (user: { name: string; email: string } | null, token?: string | null) => void;
+  setActiveModal: (modal: 'none' | 'login' | 'howToPlay' | 'leaveWarning' | 'gameOver' | 'avatarSelection') => void;
+  setUser: (user: { name: string; email: string; avatar?: string } | null, token?: string | null) => void;
   logout: () => void;
   initAuth: () => Promise<void>;
+  updateAvatar: (avatar: string) => Promise<void>;
 }
 
 const getRandomWord = (mode: GameMode) => {
@@ -104,6 +105,30 @@ export const useGameStore = create<GameState>((set, get) => ({
       }
     } catch (err) {
       console.error('Auth initialization failed', err);
+    }
+  },
+
+  updateAvatar: async (avatar: string) => {
+    const { token, user } = get();
+    if (!token || !user) return;
+    
+    try {
+      const res = await fetch('/api/me/avatar', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ avatar })
+      });
+      
+      if (res.ok) {
+        const updatedUser = { ...user, avatar };
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+        set({ user: updatedUser });
+      }
+    } catch (err) {
+      console.error('Failed to update avatar', err);
     }
   },
 

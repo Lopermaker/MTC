@@ -1,6 +1,7 @@
 import { useGameStore } from '../store';
 import { X, LogOut } from 'lucide-react';
 import { Login } from './Login';
+import { AvatarSelection } from './AvatarSelection';
 
 export const StartMenu = () => {
   const { startGame, activeModal, setActiveModal, mode, setMode, user, logout } = useGameStore();
@@ -47,16 +48,27 @@ export const StartMenu = () => {
               Log in
             </button>
           ) : (
-            <div className="flex gap-2">
-              <div className="flex-1 bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-bold text-lg py-3 px-4 rounded-full truncate text-center">
+            <div className="flex gap-2 items-center">
+              <button 
+                onClick={() => setActiveModal('avatarSelection')}
+                className="shrink-0 w-14 h-14 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-700 hover:border-emerald-500 transition-colors bg-slate-100 dark:bg-slate-800 flex items-center justify-center p-1"
+                title="Change Avatar"
+              >
+                <img 
+                  src={user.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.name}`} 
+                  alt="Avatar" 
+                  className="w-full h-full rounded-full"
+                />
+              </button>
+              <div className="flex-1 flex items-center justify-center bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-bold text-lg px-4 rounded-full truncate h-14">
                 Hi, {user.name}
               </div>
               <button
                 onClick={logout}
-                className="bg-transparent border-2 border-slate-900 dark:border-slate-100 text-slate-900 dark:text-slate-100 p-3 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95 transition-colors"
+                className="shrink-0 flex items-center justify-center w-14 h-14 bg-transparent border-2 border-slate-900 dark:border-slate-100 text-slate-900 dark:text-slate-100 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95 transition-colors"
                 title="Log out"
               >
-                <LogOut size={24} />
+                <LogOut size={20} />
               </button>
             </div>
           )}
@@ -167,6 +179,7 @@ export const StartMenu = () => {
       )}
 
       {activeModal === 'login' && <Login />}
+      {activeModal === 'avatarSelection' && <AvatarSelection />}
     </div>
   );
 };

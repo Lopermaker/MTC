@@ -17,9 +17,13 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
     email TEXT UNIQUE,
-    password TEXT
+    password TEXT,
+    avatar TEXT
   )
 `);
+try {
+  db.exec(`ALTER TABLE users ADD COLUMN avatar TEXT`);
+} catch (e) {}
 
 const app = express();
 app.use(cors());
@@ -63,11 +67,13 @@ app.post('/api/register', (req, res) => {
   try {
     const hash = bcrypt.hashSync(password, 10);
     const userName = name || email.split('@')[0];
-    const stmt = db.prepare('INSERT INTO users (email, password, name) VALUES (?, ?, ?)');
-    const info = stmt.run(email, hash, userName);
+    const defaultAvatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${userName}`;
+    
+    const stmt = db.prepare('INSERT INTO users (email, password, name, avatar) VALUES (?, ?, ?, ?)');
+    const info = stmt.run(email, hash, userName, defaultAvatar);
     
     const token = jwt.sign({ id: info.lastInsertRowid, email, name: userName }, SECRET, { expiresIn: '7d' });
-    res.json({ token, user: { name: userName, email } });
+    res.json({ token, user: { name: userName, email, avatar: defaultAvatar } });
   } catch (err) {
     if (err.code === 'SQLITE_CONSTRAINT_UNIQUE') {
       res.status(400).json({ error: 'An account with this email already exists' });
@@ -92,7 +98,7 @@ app.post('/api/login', (req, res) => {
     if (!valid) return res.status(400).json({ error: 'Invalid email or password' });
     
     const token = jwt.sign({ id: user.id, email: user.email, name: user.name }, SECRET, { expiresIn: '7d' });
-    res.json({ token, user: { name: user.name, email: user.email } });
+    res.json({ token, user: { name: user.name, email: user.email, avatar: user.avatar } });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -101,11 +107,25 @@ app.post('/api/login', (req, res) => {
 // Get Current User
 app.get('/api/me', authenticateToken, (req, res) => {
   try {
-    const stmt = db.prepare('SELECT name, email FROM users WHERE id = ?');
+    const stmt = db.prepare('SELECT name, email, avatar FROM users WHERE id = ?');
     const user = stmt.get(req.user.id);
     
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json({ user });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Update Avatar
+app.put('/api/me/avatar', authenticateToken, (req, res) => {
+  const { avatar } = req.body;
+  if (!avatar) return res.status(400).json({ error: 'Avatar is required' });
+  
+  try {
+    const stmt = db.prepare('UPDATE users SET avatar = ? WHERE id = ?');
+    stmt.run(avatar, req.user.id);
+    res.json({ success: true, avatar });
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
   }
