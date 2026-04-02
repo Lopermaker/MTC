@@ -1,8 +1,9 @@
 import { useGameStore } from '../store';
-import { X } from 'lucide-react';
+import { X, LogOut } from 'lucide-react';
+import { Login } from './Login';
 
 export const StartMenu = () => {
-  const { startGame, activeModal, setActiveModal, mode, setMode } = useGameStore();
+  const { startGame, activeModal, setActiveModal, mode, setMode, user, setUser } = useGameStore();
   const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
   return (
@@ -37,12 +38,29 @@ export const StartMenu = () => {
           >
             Play
           </button>
-          <button
-            onClick={() => setActiveModal('login')}
-            className="w-full bg-transparent border-2 border-slate-900 dark:border-slate-100 text-slate-900 dark:text-slate-100 font-bold text-lg py-3 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95 transition-colors"
-          >
-            Log in
-          </button>
+          
+          {!user ? (
+            <button
+              onClick={() => setActiveModal('login')}
+              className="w-full bg-transparent border-2 border-slate-900 dark:border-slate-100 text-slate-900 dark:text-slate-100 font-bold text-lg py-3 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95 transition-colors"
+            >
+              Log in
+            </button>
+          ) : (
+            <div className="flex gap-2">
+              <div className="flex-1 bg-slate-100 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 font-bold text-lg py-3 px-4 rounded-full truncate text-center">
+                Hi, {user.name}
+              </div>
+              <button
+                onClick={() => setUser(null)}
+                className="bg-transparent border-2 border-slate-900 dark:border-slate-100 text-slate-900 dark:text-slate-100 p-3 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95 transition-colors"
+                title="Log out"
+              >
+                <LogOut size={24} />
+              </button>
+            </div>
+          )}
+
           <button
             onClick={() => setActiveModal('howToPlay')}
             className="w-full bg-transparent border-2 border-slate-900 dark:border-slate-100 text-slate-900 dark:text-slate-100 font-bold text-lg py-3 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95 transition-colors"
@@ -148,20 +166,7 @@ export const StartMenu = () => {
         </div>
       )}
 
-      {activeModal === 'login' && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in p-4">
-          <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl p-8 max-w-sm w-full relative animate-in zoom-in-95 text-center">
-            <button onClick={() => setActiveModal('none')} className="absolute top-4 right-4 p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
-              <X size={24} />
-            </button>
-            <h2 className="text-2xl font-black mb-4 font-serif">Log in</h2>
-            <p className="text-slate-600 dark:text-slate-400 mb-6">Login is not available in this demo version.</p>
-            <button onClick={() => setActiveModal('none')} className="w-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold py-3 rounded-full hover:scale-105 active:scale-95 transition-transform">
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+      {activeModal === 'login' && <Login />}
     </div>
   );
 };

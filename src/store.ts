@@ -25,6 +25,7 @@ interface GameState {
   timeoutId: number | null;
 
   activeModal: 'none' | 'login' | 'howToPlay' | 'leaveWarning' | 'gameOver';
+  user: { name: string; email: string } | null;
   
   // Actions
   startGame: () => void;
@@ -36,6 +37,7 @@ interface GameState {
   tickTimer: () => void;
   clearMessage: () => void;
   setActiveModal: (modal: 'none' | 'login' | 'howToPlay' | 'leaveWarning' | 'gameOver') => void;
+  setUser: (user: { name: string; email: string } | null) => void;
 }
 
 const getRandomWord = (mode: GameMode) => {
@@ -59,10 +61,13 @@ export const useGameStore = create<GameState>((set, get) => ({
   message: null,
   timeoutId: null,
   activeModal: 'none',
+  user: null,
 
   startGame: () => set({ hasStarted: true }),
 
   setActiveModal: (modal) => set({ activeModal: modal }),
+
+  setUser: (user) => set({ user }),
 
   setMode: (mode) => {
     const { timeoutId } = get();
