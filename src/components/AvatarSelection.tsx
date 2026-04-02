@@ -14,7 +14,7 @@ const MOUTH_STYLES = [
   'bite', 'diagram', 'grill01', 'grill02', 'smile01', 'square01', 'square02'
 ];
 
-const BASE_URL = 'https://api.dicebear.com/7.x/bottts/svg';
+const BASE_URL = 'https://api.dicebear.com/9.x/bottts/svg';
 
 export const AvatarSelection = () => {
   const { user, setActiveModal, updateAvatar } = useGameStore();

@@ -55,7 +55,7 @@ export const StartMenu = () => {
                 title="Change Avatar"
               >
                 <img 
-                  src={user.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.name}`} 
+                  src={user.avatar || `https://api.dicebear.com/9.x/bottts/svg?seed=${user.name}`} 
                   alt="Avatar" 
                   className="w-full h-full rounded-full"
                 />

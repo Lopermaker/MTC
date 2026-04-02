@@ -67,7 +67,7 @@ app.post('/api/register', (req, res) => {
   try {
     const hash = bcrypt.hashSync(password, 10);
     const userName = name || email.split('@')[0];
-    const defaultAvatar = `https://api.dicebear.com/7.x/bottts/svg?seed=${userName}`;
+    const defaultAvatar = `https://api.dicebear.com/9.x/bottts/svg?seed=${userName}`;
     
     const stmt = db.prepare('INSERT INTO users (email, password, name, avatar) VALUES (?, ?, ?, ?)');
     const info = stmt.run(email, hash, userName, defaultAvatar);
