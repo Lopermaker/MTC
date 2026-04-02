@@ -26,6 +26,7 @@ interface GameState {
 
   activeModal: 'none' | 'login' | 'howToPlay' | 'leaveWarning' | 'gameOver';
   user: { name: string; email: string } | null;
+  token: string | null;
   
   // Actions
   startGame: () => void;
@@ -37,7 +38,8 @@ interface GameState {
   tickTimer: () => void;
   clearMessage: () => void;
   setActiveModal: (modal: 'none' | 'login' | 'howToPlay' | 'leaveWarning' | 'gameOver') => void;
-  setUser: (user: { name: string; email: string } | null) => void;
+  setUser: (user: { name: string; email: string } | null, token?: string | null) => void;
+  logout: () => void;
 }
 
 const getRandomWord = (mode: GameMode) => {
@@ -61,13 +63,26 @@ export const useGameStore = create<GameState>((set, get) => ({
   message: null,
   timeoutId: null,
   activeModal: 'none',
-  user: null,
+  user: JSON.parse(localStorage.getItem('user') || 'null'),
+  token: localStorage.getItem('token') || null,
 
   startGame: () => set({ hasStarted: true }),
 
   setActiveModal: (modal) => set({ activeModal: modal }),
 
-  setUser: (user) => set({ user }),
+  setUser: (user, token) => {
+    if (user && token) {
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('token', token);
+      set({ user, token });
+    }
+  },
+
+  logout: () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    set({ user: null, token: null });
+  },
 
   setMode: (mode) => {
     const { timeoutId } = get();

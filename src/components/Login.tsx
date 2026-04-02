@@ -1,33 +1,52 @@
 import { useState } from 'react';
 import { useGameStore } from '../store';
-import { X, Mail, ArrowRight } from 'lucide-react';
+import { X, Mail, ArrowRight, Lock, User as UserIcon } from 'lucide-react';
 
 export const Login = () => {
   const { setActiveModal, setUser } = useGameStore();
+  const [isLogin, setIsLogin] = useState(true);
+  
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) return;
+    if (!email || !password) return;
     
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setUser({ name: email.split('@')[0], email });
+    setError(null);
+    
+    try {
+      const endpoint = isLogin ? '/api/login' : '/api/register';
+      const body = isLogin ? { email, password } : { email, password, name };
+
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Something went wrong');
+      }
+
+      setUser(data.user, data.token);
       setActiveModal('none');
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   const handleSocialLogin = (provider: string) => {
-    setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setUser({ name: `${provider} User`, email: `user@${provider}.com` });
-      setActiveModal('none');
-      setIsSubmitting(false);
-    }, 1000);
+    setError(`${provider} login requires OAuth configuration. Please use email for now.`);
   };
 
   return (
@@ -41,7 +60,7 @@ export const Login = () => {
 
       <div className="w-full max-w-md px-8 flex flex-col items-center animate-in slide-in-from-bottom-8 duration-500">
         <h2 className="text-3xl font-black font-serif tracking-tight mb-2 text-slate-900 dark:text-white text-center">
-          Log in or create an account
+          {isLogin ? 'Log in' : 'Create an account'}
         </h2>
         <p className="text-slate-500 dark:text-slate-400 text-center mb-8 font-medium">
           Save your stats and sync across devices.
@@ -49,6 +68,7 @@ export const Login = () => {
 
         <div className="w-full space-y-4">
           <button 
+            type="button"
             onClick={() => handleSocialLogin('Google')}
             disabled={isSubmitting}
             className="w-full relative flex items-center justify-center gap-3 bg-white text-slate-700 border-2 border-slate-200 hover:bg-slate-50 hover:border-slate-300 font-bold py-3.5 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
@@ -63,6 +83,7 @@ export const Login = () => {
           </button>
 
           <button 
+            type="button"
             onClick={() => handleSocialLogin('Apple')}
             disabled={isSubmitting}
             className="w-full relative flex items-center justify-center gap-3 bg-black text-white hover:bg-slate-800 font-bold py-3.5 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
@@ -73,13 +94,33 @@ export const Login = () => {
             Continue with Apple
           </button>
 
-          <div className="relative flex items-center py-4">
+          <div className="relative flex items-center py-2">
             <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
             <span className="flex-shrink-0 px-4 text-sm text-slate-400 font-bold uppercase tracking-wider">or</span>
             <div className="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
           </div>
 
-          <form onSubmit={handleEmailSubmit} className="flex flex-col gap-3">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            {error && (
+              <div className="text-sm font-bold text-rose-500 bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 rounded-xl p-3 text-center">
+                {error}
+              </div>
+            )}
+            
+            {!isLogin && (
+              <div className="relative">
+                <UserIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <input 
+                  type="text" 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Display Name"
+                  disabled={isSubmitting}
+                  className="w-full bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-2xl py-3.5 pl-12 pr-4 focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-500 transition-colors disabled:opacity-50"
+                />
+              </div>
+            )}
+
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
               <input 
@@ -92,21 +133,48 @@ export const Login = () => {
                 className="w-full bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-2xl py-3.5 pl-12 pr-4 focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-500 transition-colors disabled:opacity-50"
               />
             </div>
+
+            <div className="relative">
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+              <input 
+                type="password" 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                required
+                disabled={isSubmitting}
+                className="w-full bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white rounded-2xl py-3.5 pl-12 pr-4 focus:outline-none focus:border-emerald-500 dark:focus:border-emerald-500 transition-colors disabled:opacity-50"
+              />
+            </div>
+
             <button 
               type="submit"
-              disabled={isSubmitting || !email}
-              className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white font-bold py-3.5 rounded-full hover:bg-emerald-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
+              disabled={isSubmitting || !email || !password}
+              className="w-full flex items-center justify-center gap-2 bg-emerald-500 text-white font-bold py-3.5 rounded-full hover:bg-emerald-600 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 mt-2"
             >
               {isSubmitting ? (
                 <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
               ) : (
                 <>
-                  Continue with Email
+                  {isLogin ? 'Log In' : 'Create Account'}
                   <ArrowRight size={20} />
                 </>
               )}
             </button>
           </form>
+
+          <div className="text-center mt-4">
+            <button 
+              type="button"
+              onClick={() => {
+                setIsLogin(!isLogin);
+                setError(null);
+              }}
+              className="text-sm font-bold text-slate-500 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              {isLogin ? "Don't have an account? Sign up" : "Already have an account? Log in"}
+            </button>
+          </div>
         </div>
 
         <p className="mt-8 text-xs text-slate-400 text-center max-w-[280px]">

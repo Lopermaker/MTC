@@ -3,7 +3,7 @@ import { X, LogOut } from 'lucide-react';
 import { Login } from './Login';
 
 export const StartMenu = () => {
-  const { startGame, activeModal, setActiveModal, mode, setMode, user, setUser } = useGameStore();
+  const { startGame, activeModal, setActiveModal, mode, setMode, user, logout } = useGameStore();
   const today = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 
   return (
@@ -52,7 +52,7 @@ export const StartMenu = () => {
                 Hi, {user.name}
               </div>
               <button
-                onClick={() => setUser(null)}
+                onClick={logout}
                 className="bg-transparent border-2 border-slate-900 dark:border-slate-100 text-slate-900 dark:text-slate-100 p-3 rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 active:scale-95 transition-colors"
                 title="Log out"
               >
