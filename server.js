@@ -27,7 +27,7 @@ try {
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 const SECRET = 'lexicon-super-secret-key-2026'; // In production, use process.env.JWT_SECRET
 

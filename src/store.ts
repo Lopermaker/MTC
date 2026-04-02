@@ -112,6 +112,11 @@ export const useGameStore = create<GameState>((set, get) => ({
     const { token, user } = get();
     if (!token || !user) return;
     
+    // Optimistic update
+    const updatedUser = { ...user, avatar };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    set({ user: updatedUser });
+
     try {
       const res = await fetch('/api/me/avatar', {
         method: 'PUT',
@@ -122,13 +127,15 @@ export const useGameStore = create<GameState>((set, get) => ({
         body: JSON.stringify({ avatar })
       });
       
-      if (res.ok) {
-        const updatedUser = { ...user, avatar };
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        set({ user: updatedUser });
+      if (!res.ok) {
+        // Revert on failure
+        throw new Error('Failed to save');
       }
     } catch (err) {
       console.error('Failed to update avatar', err);
+      // Revert to original
+      localStorage.setItem('user', JSON.stringify(user));
+      set({ user });
     }
   },
 
