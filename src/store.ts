@@ -114,7 +114,11 @@ export const useGameStore = create<GameState>((set, get) => ({
     
     // Optimistic update
     const updatedUser = { ...user, avatar };
-    localStorage.setItem('user', JSON.stringify(updatedUser));
+    try {
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    } catch (e) {
+      console.warn('Could not save user to localStorage, possibly due to quota');
+    }
     set({ user: updatedUser });
 
     try {
@@ -134,7 +138,9 @@ export const useGameStore = create<GameState>((set, get) => ({
     } catch (err) {
       console.error('Failed to update avatar', err);
       // Revert to original
-      localStorage.setItem('user', JSON.stringify(user));
+      try {
+        localStorage.setItem('user', JSON.stringify(user));
+      } catch (e) {}
       set({ user });
     }
   },
